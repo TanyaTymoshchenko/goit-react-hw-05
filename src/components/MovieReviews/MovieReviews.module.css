@@ -1,21 +1,12 @@
-.item {
-    margin-bottom: 16px;
-}
-
-.icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-}
-
-.name {
+.container {
     display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    font-size: 20px;
-    font-weight: 700;
+    padding: 8px;
 }
 
-.content {
-    font-size: 18px;
+.reviewListItem {
+    margin-bottom: 20px;
+}
+
+.reviewAuthor {
+    margin-bottom: 8px;
 }

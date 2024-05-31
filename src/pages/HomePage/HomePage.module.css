@@ -1,11 +1,8 @@
 .container {
-    margin-right: auto;
-    margin-left: auto;
+    margin: 16px;
 }
 
 .title {
-    font-size: 36px;
-    color: yellowgreen;
-    margin-right: auto;
-    margin-left: 50px;
+    margin-top: 16px;
+    margin-bottom: 24px;
 }

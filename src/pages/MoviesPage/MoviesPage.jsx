@@ -1,66 +1,51 @@
-import { useSearchParams } from "react-router-dom";
-import { useState, useEffect } from 'react';
-import { fetchSearchMovie } from '../../api-TMDB';
-import SearchBar from '../../components/SearchBar/SearchBar';
-import Loader from '../../components/Loader/Loader';
-import toast from 'react-hot-toast';
-import style from './MoviesPage.module.css';
-import MovieList from "../../components/MovieList/MovieList";
+import { useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import SearchForm from '../../components/SearchForm/SearchForm';
+import { getSearchMovie } from '../../movies-api';
+import MovieList from '../../components/MovieList/MovieList';
 
-export default function MoviesPage() {    
-    const [searchParams, setSearchParams] = useSearchParams();
-    const movieName = searchParams.get('movieName') ?? '';
-    const [moviesList, setMoviesList] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
-    
+export default function MoviesPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const movieName = searchParams.get('movieName') ?? '';
+  const [findMovies, setFindMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-    
-
-    useEffect(() => {
-        if (!movieName) return;
-        setMoviesList([]);
-        setLoading(true);
-        const getMovieSearch = async (movieName) => {
-            try {
-                const data = await fetchSearchMovie(movieName);
-                if (!data.results.length) { 
-                    setError(true);
-                    toast.error('There are no movies with this request. Please, try again');
-                    return;
-                }
-                setMoviesList(data.results);
-            } catch (error) {
-                setError(true);
-                console.log(error);
-                toast.error("Whoops. Something went wrong! Please try reloading this page!");
-            } finally {
-                setLoading(false);
-                setError(false);
-            }
-        };
-        getMovieSearch(movieName);
-    }, [movieName]);
-
-    const handleSubmit = e => {
-        e.preventDefault();
-        const searchForm = e.currentTarget;
-        const newMovieName = searchForm.elements.movieName.value.trim();
-        if (!newMovieName) {
-            toast.error('Please enter a movie name!');
-            return;
-        }
-        setSearchParams({ movieName: newMovieName });
-        searchForm.reset();
-
+  useEffect(() => {
+    if (movieName.trim() === '') {
+      return;
     }
 
-    return (
-        <div className={style.container}>
-            <SearchBar onSubmit={handleSubmit} />
-            {loading && <Loader />}
-            {error && <p>There is no movies with this request. Please, try again</p>}
-            <MovieList movies={moviesList} />
-        </div>
-    );
+    async function fetchSearchMovie() {
+      try {
+        setLoading(true);
+        setIsError(false);
+        const data = await getSearchMovie(movieName);
+        setFindMovies(data.results);
+      } catch (error) {
+        setIsError(true);
+        console.log('error');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchSearchMovie();
+  }, [movieName]);
+    
+  const handleSearch = query => {
+    setSearchParams({ movieName: query });
+    setFindMovies([]);
+  };
+
+  return (
+    <div>
+      <SearchForm onSearch={handleSearch} />
+      {loading && <b>Loading found movies...</b>}
+      {findMovies.length > 0 && <MovieList movies={findMovies} />}
+      {isError && (
+        <b>There is no movies with this request. Please, try again</b>
+      )}
+    </div>
+  );
 }

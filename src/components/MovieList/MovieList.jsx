@@ -1,19 +1,17 @@
-import PropTypes from 'prop-types';
-import MovieItem from '../MovieItem/MovieItem';
-import style from './MovieList.module.css'
+import { Link, useLocation } from 'react-router-dom';
 
+export default function MovieList({ movies }) {
+  const location = useLocation();
 
-export default function MovieList({ movies }) { 
-    return (
-        <ul className={style.container}>
-            {movies.map((movie) => (
-                <li className={style.item} key={movie.id}>
-                    <MovieItem movie={movie} /> 
-                </li>
-            ))}
-        </ul>
-    );
+  return (
+    <ul>
+      {movies.map(movie => (
+        <li key={movie.id}>
+          <Link to={`/movies/${movie.id}`} state={location}>
+            {movie.original_title}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
 }
-MovieList.propTypes = {
-    movies: PropTypes.array.isRequired,
-};

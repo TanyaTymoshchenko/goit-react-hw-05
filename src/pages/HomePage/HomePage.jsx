@@ -1,35 +1,32 @@
-import { useEffect, useState } from "react";
-import {fetchTrendMovies} from '../../api-TMDB'
-import toast from "react-hot-toast";
-import Loader from '../../components/Loader/Loader'
-import MovieList from '../../components/MovieList/MovieList'
-import style from './HomePage.module.css'
+import { useEffect, useState } from 'react';
+import { getTrendMovies } from '../../movies-api';
+import MovieList from '../../components/MovieList/MovieList';
+import css from './HomePage.module.css';
 
 export default function HomePage() {
-    const [trendMovies, setTrendMovies] = useState([]);
-    const [loading, setLoading] = useState(false);
-    useEffect(() => {
-        async function getTrendMovies() {
-            try {
-                setLoading(true);
-                const data = await fetchTrendMovies();
-                setTrendMovies(data.results);
-                setLoading(false);
-            } catch (error) {
-                toast.error("Whoops. Something went wrong! Please try reloading this page!");
-            } finally {
-                setLoading(false);
-            }
-        }
-            getTrendMovies();
+  const [trendMovies, setTrendMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    }, [])
-    return (
-        <div className={style. container}>
-            <h1 className={style.title}>Trending today</h1>
-            {loading && <Loader />}
-            <MovieList movies={trendMovies} />
-        
-        </div>
-    );
+  useEffect(() => {
+    async function fetchTrendMovies() {
+      setLoading(true);
+      try {
+        const data = await getTrendMovies();
+        setTrendMovies(data.results);
+      } catch (error) {
+        console.log('error');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTrendMovies();
+  }, []);
+  return (
+    <div className={css.container}>
+      <h1 className={css.tytle}>Trending today</h1>
+      {loading && <b>Loading trending movies...</b>}
+      <MovieList movies={trendMovies} />
+    </div>
+  );
 }

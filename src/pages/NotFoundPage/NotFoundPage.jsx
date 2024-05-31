@@ -1,8 +1,11 @@
-export default function NotFound() {
-    return (
-        <div>
-            <h1>404 - Page not found.</h1>
-            <p>Unfortunately, there is no such a page.</p>
-        </div>
-    );
+import { Link } from 'react-router-dom';
+
+export default function NotFoundPage() {
+  return (
+    <div>
+      <p>
+        Sorry, unfortunately, requested page is not found! Please, go to <Link to="/">home page</Link>!
+      </p>
+    </div>
+  );
 }
